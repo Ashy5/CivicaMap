@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<usuarios>
+  <usuario>
+    <id>101</id>
+    <nombre>Carlos Gómez</nombre>
+    <email>carlos.gomez@civicamap.org</email>
+    <estatus>Activo</estatus>
+  </usuario>
+  <usuario>
+    <id>102</id>
+    <nombre>María Rodríguez</nombre>
+    <email>maria.rodriguez@civicamap.org</email>
+    <estatus>Activo</estatus>
+  </usuario>
+  <usuario>
+    <id>103</id>
+    <nombre>Juan Pérez</nombre>
+    <email>juan.perez@civicamap.org</email>
+    <estatus>Inactivo</estatus>
+  </usuario>
+</usuarios>
