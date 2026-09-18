@@ -51,6 +51,7 @@
                             <th>Ubicación</th>
                             <th>Estado</th>
                             <th>Fecha</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,6 +81,18 @@
                                     <span class="badge bg-light text-dark">{{ $reporte->estado }}</span>
                                 </td>
                                 <td>{{ $reporte->fecha_reporte ? $reporte->fecha_reporte->format('d/m/Y H:i') : 'Sin fecha' }}</td>
+                                <td class="d-flex gap-2">
+                                    <a href="{{ route('reportes.edit', $reporte->id_reporte) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil-square me-1"></i>Editar
+                                    </a>
+                                    <form action="{{ route('reportes.destroy', $reporte->id_reporte) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este reporte?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash me-1"></i>Eliminar
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
 
                             @if ($rutaImagen)

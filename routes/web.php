@@ -33,4 +33,7 @@ Route::view('/login', 'auth.login')->name('login');
 Route::view('/registro', 'auth.registro')->name('registro');
 
 Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');
+Route::get('/reportes/{reporte}/edit', [ReporteController::class, 'edit'])->name('reportes.edit');
 Route::post('/reportes', [ReporteController::class, 'store'])->name('reportes.store');
+Route::match(['PUT', 'PATCH'], '/reportes/{reporte}', [ReporteController::class, 'update'])->name('reportes.update');
+Route::delete('/reportes/{reporte}', [ReporteController::class, 'destroy'])->name('reportes.destroy');
