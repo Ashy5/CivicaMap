@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<categorias_reporte>
+  <categoria>
+    <id>1</id>
+    <nombre>Alumbrado Público</nombre>
+    <descripcion>Fallas en luminarias y postes de luz</descripcion>
+  </categoria>
+  <categoria>
+    <id>2</id>
+    <nombre>Bacheo y Vialidad</nombre>
+    <descripcion>Deterioro en la cinta asfáltica y calles</descripcion>
+  </categoria>
+  <categoria>
+    <id>3</id>
+    <nombre>Agua y Alcantarillado</nombre>
+    <descripcion>Fugas de agua potable o drenaje obstruido</descripcion>
+  </categoria>
+</categorias_reporte>
