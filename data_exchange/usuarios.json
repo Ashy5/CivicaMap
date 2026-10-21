@@ -1,0 +1,20 @@
+[
+  {
+    "id": 101,
+    "nombre": "Carlos Gómez",
+    "email": "carlos.gomez@civicamap.org",
+    "estatus": "Activo"
+  },
+  {
+    "id": 102,
+    "nombre": "María Rodríguez",
+    "email": "maria.rodriguez@civicamap.org",
+    "estatus": "Activo"
+  },
+  {
+    "id": 103,
+    "nombre": "Juan Pérez",
+    "email": "juan.perez@civicamap.org",
+    "estatus": "Inactivo"
+  }
+]

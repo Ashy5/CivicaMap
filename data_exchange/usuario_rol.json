@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "fecha_asignacion": "2026-01-15T09:00:00Z",
+    "usuario": {
+      "id": 101,
+      "nombre": "Carlos Gómez",
+      "email": "carlos.gomez@civicamap.org"
+    },
+    "rol": {
+      "id": 1,
+      "nombre": "Administrador",
+      "descripcion": "Acceso total a la configuración y gestión del sistema"
+    }
+  },
+  {
+    "id": 2,
+    "fecha_asignacion": "2026-02-01T10:30:00Z",
+    "usuario": {
+      "id": 102,
+      "nombre": "María Rodríguez",
+      "email": "maria.rodriguez@civicamap.org"
+    },
+    "rol": {
+      "id": 3,
+      "nombre": "Moderador",
+      "descripcion": "Personal encargado de revisar y validar incidencias"
+    }
+  },
+  {
+    "id": 3,
+    "fecha_asignacion": "2026-03-10T14:15:00Z",
+    "usuario": {
+      "id": 103,
+      "nombre": "Juan Pérez",
+      "email": "juan.perez@civicamap.org"
+    },
+    "rol": {
+      "id": 2,
+      "nombre": "Ciudadano",
+      "descripcion": "Usuario estándar con permisos para generar reportes"
+    }
+  }
+]

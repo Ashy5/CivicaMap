@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "nombre": "Administrador",
+    "descripcion": "Acceso total a la configuración y gestión del sistema"
+  },
+  {
+    "id": 2,
+    "nombre": "Ciudadano",
+    "descripcion": "Usuario estándar con permisos para generar reportes"
+  },
+  {
+    "id": 3,
+    "nombre": "Moderador",
+    "descripcion": "Personal encargado de revisar y validar incidencias"
+  }
+]
