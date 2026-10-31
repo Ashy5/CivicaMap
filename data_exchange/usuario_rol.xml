@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<asignaciones_roles>
+  <asignacion>
+    <id>1</id>
+    <fecha_asignacion>2026-01-15T09:00:00Z</fecha_asignacion>
+    <usuario>
+      <id>101</id>
+      <nombre>Carlos Gómez</nombre>
+      "email": "carlos.gomez@civicamap.org"
+    </usuario>
+    <rol>
+      <id>1</id>
+      <nombre>Administrador</nombre>
+      <descripcion>Acceso total a la configuración y gestión del sistema</descripcion>
+    </rol>
+  </asignacion>
+  <asignacion>
+    <id>2</id>
+    <fecha_asignacion>2026-02-01T10:30:00Z</fecha_asignacion>
+    <usuario>
+      <id>102</id>
+      <nombre>María Rodríguez</nombre>
+      "email": "maria.rodriguez@civicamap.org"
+    </usuario>
+    <rol>
+      <id>3</id>
+      <nombre>Moderador</nombre>
+      <descripcion>Personal encargado de revisar y validar incidencias</descripcion>
+    </rol>
+  </asignacion>
+  <asignacion>
+    <id>3</id>
+    <fecha_asignacion>2026-03-10T14:15:00Z</fecha_asignacion>
+    <usuario>
+      <id>103</id>
+      <nombre>Juan Pérez</nombre>
+      "email": "juan.perez@civicamap.org"
+    </usuario>
+    <rol>
+      <id>2</id>
+      <nombre>Ciudadano</nombre>
+      <descripcion>Usuario estándar con permisos para generar reportes</descripcion>
+    </rol>
+  </asignacion>
+</asignaciones_roles>

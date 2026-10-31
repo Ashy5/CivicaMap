@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<roles>
+  <rol>
+    <id>1</id>
+    <nombre>Administrador</nombre>
+    <descripcion>Acceso total a la configuración y gestión del sistema</descripcion>
+  </rol>
+  <rol>
+    <id>2</id>
+    <nombre>Ciudadano</nombre>
+    <descripcion>Usuario estándar con permisos para generar reportes</descripcion>
+  </rol>
+  <rol>
+    <id>3</id>
+    <nombre>Moderador</nombre>
+    <descripcion>Personal encargado de revisar y validar incidencias</descripcion>
+  </rol>
+</roles>

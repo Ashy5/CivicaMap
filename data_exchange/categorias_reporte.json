@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "nombre": "Alumbrado Público",
+    "descripcion": "Fallas en luminarias y postes de luz"
+  },
+  {
+    "id": 2,
+    "nombre": "Bacheo y Vialidad",
+    "descripcion": "Deterioro en la cinta asfáltica y calles"
+  },
+  {
+    "id": 3,
+    "nombre": "Agua y Alcantarillado",
+    "descripcion": "Fugas de agua potable o drenaje obstruido"
+  }
+]
