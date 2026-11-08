@@ -59,20 +59,32 @@ del token y no se acepta desde el cuerpo.
 
 | Método | Ruta | Permiso mínimo | Descripción |
 |---|---|---|---|
-| POST | `/api/v1/admin/login` | Público | Iniciar sesión administrativa y obtener token |
+| POST | `/api/v1/admin/login` | Público | Iniciar sesión con una cuenta activa que tenga rol Administrador, Admin o SuperAdmin |
+| POST | `/api/v1/admin/logout` | Administrador autenticado | Revocar el token actual |
 | GET | `/api/v1/admin/perfil` | Nivel 1 | Perfil del administrador autenticado |
 | GET | `/api/v1/admin/incidencias` y `/{id}` | Nivel 1 | Consultar incidencias |
 | POST | `/api/v1/admin/incidencias` | Nivel 2 | Crear incidencia |
 | PUT/PATCH | `/api/v1/admin/incidencias/{id}` | Nivel 2 | Actualizar incidencia |
 | DELETE | `/api/v1/admin/incidencias/{id}` | Nivel 3 | Eliminar incidencia |
 | GET/POST/PUT/PATCH/DELETE | `/api/v1/admin/categorias[/{id}]` | Nivel 3 | Consultar y gestionar categorías |
+| GET | `/api/v1/admin/recursos[/{id}]` | Administrador | Consultar servicios, incluidos los deshabilitados |
+| POST/PUT/PATCH/DELETE | `/api/v1/admin/recursos[/{id}]` | Administrador | Crear, actualizar y deshabilitar servicios |
+| GET | `/api/v1/admin/usuarios` | Administrador autorizado | Listar clientes y administradores |
+| PATCH | `/api/v1/admin/usuarios/{id}/estado` | Administrador autorizado | Cambiar estado o roles de un cliente o administrador |
 | GET/POST/PUT/PATCH/DELETE | `/api/v1/admin/usuarios[/{id}]` | Nivel 3 | Consultar y gestionar usuarios ciudadanos |
 
 El login administrativo requiere `username` y `password`. Los niveles se
 aplican a los administradores existentes: 1 consulta, 2 crea/edita incidencias
 y 3 administra incidencias, categorías y usuarios. DELETE en categorías y
 usuarios desactiva el registro para conservar incidencias y relaciones
-históricas; DELETE de una incidencia la elimina.
+históricas; DELETE de un recurso también lo deshabilita y DELETE de una
+incidencia la elimina. Para actualizar estado/roles se envía
+`tipo_usuario` (`cliente` o `administrador`) y al menos uno de `estado`
+(booleano) o `role_ids` (arreglo de identificadores de rol). Los endpoints
+administrativos privados requieren `Authorization: Bearer <token>`; el token
+administrativo se crea con el nombre `admin-token`. Las políticas de recurso
+limitan las modificaciones administrativas a cuentas con rol administrativo
+o nivel 3.
 
 ### Roles y permisos dinámicos
 

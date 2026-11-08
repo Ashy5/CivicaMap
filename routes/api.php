@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Admin\CategoriaController as AdminCategoriaController;
 use App\Http\Controllers\Api\Admin\IncidenciaController as AdminIncidenciaController;
 use App\Http\Controllers\Api\Admin\RolController as AdminRolController;
+use App\Http\Controllers\Api\Admin\ServicioController as AdminServicioController;
 use App\Http\Controllers\Api\Admin\UsuarioController as AdminUsuarioController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Cliente\CategoriaController as ClienteCategoriaController;
@@ -43,6 +44,16 @@ Route::prefix('v1')->group(function () {
                 ->middleware('admin.role:administrar-categorias')
                 ->except(['create', 'edit']);
 
+            Route::get('/recursos', [AdminServicioController::class, 'index'])
+                ->middleware('admin.role:ver-reportes');
+            Route::get('/recursos/{id}', [AdminServicioController::class, 'show'])
+                ->middleware('admin.role:ver-reportes');
+            Route::post('/recursos', [AdminServicioController::class, 'store']);
+            Route::match(['put', 'patch'], '/recursos/{id}', [AdminServicioController::class, 'update']);
+            Route::delete('/recursos/{id}', [AdminServicioController::class, 'destroy']);
+
+            Route::patch('/usuarios/{id}/estado', [AdminUsuarioController::class, 'updateStatus'])
+                ->middleware('admin.role:administrar-usuarios');
             Route::apiResource('usuarios', AdminUsuarioController::class)
                 ->parameters(['usuarios' => 'id'])
                 ->middleware('admin.role:administrar-usuarios')

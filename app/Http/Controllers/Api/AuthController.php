@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\AdminLoginRequest;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\RegisterRequest;
+use App\Http\Resources\Api\Admin\AdminSessionResource;
 use App\Models\Administrador;
 use App\Models\Usuario;
 use Illuminate\Http\JsonResponse;
@@ -42,7 +43,16 @@ class AuthController extends Controller
             return $this->error('La cuenta se encuentra deshabilitada.', 403);
         }
 
-        return $this->tokenResponse($administrador, 'Sesión administrativa iniciada correctamente.');
+        if (! $administrador->hasRole(['Administrador', 'Admin', 'SuperAdmin'])) {
+            return $this->error('La cuenta no tiene un rol administrativo.', 403);
+        }
+
+        return $this->tokenResponse(
+            $administrador,
+            'Sesión administrativa iniciada correctamente.',
+            200,
+            'admin-token'
+        );
     }
 
     public function register(RegisterRequest $request): JsonResponse
@@ -74,18 +84,39 @@ class AuthController extends Controller
             $token->delete();
         }
 
+        if ($request->user() instanceof Administrador) {
+            return (new AdminSessionResource(['sesion_cerrada' => true]))
+                ->additional([
+                    'success' => true,
+                    'message' => 'Sesión cerrada correctamente.',
+                ])
+                ->response();
+        }
+
         return $this->success('Sesión cerrada correctamente.');
     }
 
-    private function tokenResponse(Usuario|Administrador $user, string $message, int $status = 200): JsonResponse
+    private function tokenResponse(
+        Usuario|Administrador $user,
+        string $message,
+        int $status = 200,
+        string $tokenName = 'api'
+    ): JsonResponse
     {
         $data = [
-            'token' => $user->createToken('api')->plainTextToken,
+            'token' => $user->createToken($tokenName)->plainTextToken,
             'token_type' => 'Bearer',
             'user' => $user instanceof Administrador
                 ? $user->only(['id', 'nombre_completo', 'username', 'nivel'])
                 : $user->only(['id_usuario', 'nombre', 'correo']),
         ];
+
+        if ($user instanceof Administrador) {
+            return (new AdminSessionResource($data))
+                ->additional(['success' => true, 'message' => $message])
+                ->response()
+                ->setStatusCode($status);
+        }
 
         return $this->success($message, $data, $status);
     }

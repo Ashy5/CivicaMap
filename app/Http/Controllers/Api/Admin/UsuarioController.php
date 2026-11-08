@@ -3,76 +3,139 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Admin\AdminUserStatusRequest;
 use App\Http\Requests\Api\Admin\StoreUsuarioRequest;
 use App\Http\Requests\Api\Admin\SyncRoleAssignmentRequest;
 use App\Http\Requests\Api\Admin\UpdateUsuarioRequest;
+use App\Http\Resources\Api\Admin\AdminUserResource;
+use App\Models\Administrador;
 use App\Models\Usuario;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UsuarioController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(): AnonymousResourceCollection
     {
-        return $this->success('Usuarios obtenidos correctamente.', Usuario::with('roles')->orderBy('nombre')->get());
+        $this->authorize('viewAny', Usuario::class);
+
+        $usuarios = Usuario::with('roles')->get()
+            ->concat(Administrador::with('roles')->get())
+            ->sortBy(fn (Usuario|Administrador $usuario): string => mb_strtolower(
+                $usuario instanceof Administrador ? $usuario->nombre_completo : $usuario->nombre
+            ))
+            ->values();
+
+        return AdminUserResource::collection($usuarios)->additional([
+            'success' => true,
+            'message' => 'Usuarios obtenidos correctamente.',
+        ]);
     }
 
-    public function show(string $id): JsonResponse
+    public function show(string $id): AdminUserResource
     {
-        return $this->success('Usuario obtenido correctamente.', Usuario::with('roles')->findOrFail($id));
+        $usuario = Usuario::with('roles')->findOrFail($id);
+        $this->authorize('view', $usuario);
+
+        return (new AdminUserResource($usuario))->additional([
+            'success' => true,
+            'message' => 'Usuario obtenido correctamente.',
+        ]);
     }
 
     public function store(StoreUsuarioRequest $request): JsonResponse
     {
+        $this->authorize('create', Usuario::class);
+
         $usuario = Usuario::create($request->validated() + [
             'fecha_registro' => now(),
             'estado' => true,
         ]);
 
-        return $this->success('Usuario creado correctamente.', $usuario, 201);
+        return (new AdminUserResource($usuario->load('roles')))
+            ->additional([
+                'success' => true,
+                'message' => 'Usuario creado correctamente.',
+            ])
+            ->response()
+            ->setStatusCode(201);
     }
 
-    public function update(UpdateUsuarioRequest $request, string $id): JsonResponse
+    public function update(UpdateUsuarioRequest $request, string $id): AdminUserResource
     {
         $usuario = Usuario::findOrFail($id);
+        $this->authorize('update', $usuario);
         $usuario->update($request->validated());
 
-        return $this->success('Usuario actualizado correctamente.', $usuario->fresh());
+        return (new AdminUserResource($usuario->fresh()->load('roles')))->additional([
+            'success' => true,
+            'message' => 'Usuario actualizado correctamente.',
+        ]);
     }
 
-    public function destroy(string $id): JsonResponse
+    public function destroy(string $id): AdminUserResource
     {
         $usuario = Usuario::findOrFail($id);
+        $this->authorize('delete', $usuario);
         $usuario->update(['estado' => false]);
         $usuario->tokens()->delete();
 
-        return $this->success('Usuario desactivado correctamente.', $usuario->fresh());
+        return (new AdminUserResource($usuario->fresh()->load('roles')))->additional([
+            'success' => true,
+            'message' => 'Usuario desactivado correctamente.',
+        ]);
     }
 
-    public function syncRoles(SyncRoleAssignmentRequest $request, string $id): JsonResponse
+    public function updateStatus(AdminUserStatusRequest $request, string $id): AdminUserResource
+    {
+        $validated = $request->validated();
+        $usuario = $validated['tipo_usuario'] === 'administrador'
+            ? Administrador::findOrFail($id)
+            : Usuario::findOrFail($id);
+        $this->authorize('update', $usuario);
+
+        if (array_key_exists('estado', $validated)) {
+            $usuario->estado = $validated['estado'];
+        }
+
+        if (array_key_exists('role_ids', $validated)) {
+            $usuario->roles()->sync($validated['role_ids']);
+        }
+
+        $usuario->save();
+
+        if (array_key_exists('estado', $validated) && ! $usuario->estado) {
+            $usuario->tokens()->delete();
+        }
+
+        return (new AdminUserResource($usuario->fresh()->load('roles')))->additional([
+            'success' => true,
+            'message' => 'Estado o roles del usuario actualizados correctamente.',
+        ]);
+    }
+
+    public function syncRoles(SyncRoleAssignmentRequest $request, string $id): AdminUserResource
     {
         $usuario = Usuario::findOrFail($id);
+        $this->authorize('update', $usuario);
         $usuario->roles()->sync($request->validated('role_ids'));
 
-        return $this->success(
-            'Roles del usuario actualizados correctamente.',
-            $usuario->load('roles')
-        );
+        return (new AdminUserResource($usuario->load('roles')))->additional([
+            'success' => true,
+            'message' => 'Roles del usuario actualizados correctamente.',
+        ]);
     }
 
-    public function removeRole(string $id, string $roleId): JsonResponse
+    public function removeRole(string $id, string $roleId): AdminUserResource
     {
         $usuario = Usuario::findOrFail($id);
+        $this->authorize('update', $usuario);
         $role = $usuario->roles()->where('roles.id_rol', $roleId)->firstOrFail();
         $usuario->roles()->detach($role->id_rol);
 
-        return $this->success(
-            'Rol removido del usuario correctamente.',
-            $usuario->load('roles')
-        );
-    }
-
-    private function success(string $message, mixed $data = null, int $status = 200): JsonResponse
-    {
-        return response()->json(['success' => true, 'message' => $message, 'data' => $data], $status);
+        return (new AdminUserResource($usuario->load('roles')))->additional([
+            'success' => true,
+            'message' => 'Rol removido del usuario correctamente.',
+        ]);
     }
 }

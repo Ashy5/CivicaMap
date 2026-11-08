@@ -5,8 +5,12 @@ namespace App\Providers;
 use App\Models\Administrador;
 use App\Models\CategoriaReporte;
 use App\Models\Reporte;
+use App\Models\Servicio;
+use App\Models\Usuario;
+use App\Policies\AdminUserPolicy;
 use App\Policies\CategoriaPolicy;
 use App\Policies\IncidenciaPolicy;
+use App\Policies\ServicioPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,11 +25,14 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(Reporte::class, IncidenciaPolicy::class);
         Gate::policy(CategoriaReporte::class, CategoriaPolicy::class);
+        Gate::policy(Servicio::class, ServicioPolicy::class);
+        Gate::policy(Usuario::class, AdminUserPolicy::class);
+        Gate::policy(Administrador::class, AdminUserPolicy::class);
 
         // Consultar reportes: niveles 1, 2 y 3
         Gate::define('ver-reportes', function ($user) {
             return $user->nivel >= 1
-                || $user->hasRole(['Admin', 'SuperAdmin'])
+                || $user->hasRole(['Administrador', 'Admin', 'SuperAdmin'])
                 || $user->hasPermissionTo('ver-reportes');
         });
 
@@ -72,7 +79,7 @@ class AppServiceProvider extends ServiceProvider
     {
         return $user instanceof Administrador && $user->estado && (
             $user->nivel === 3
-            || $user->hasRole(['Admin', 'SuperAdmin'])
+            || $user->hasRole(['Administrador', 'Admin', 'SuperAdmin'])
             || $user->hasPermissionTo('administrar-roles')
         );
     }
